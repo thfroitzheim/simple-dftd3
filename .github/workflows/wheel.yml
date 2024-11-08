@@ -69,7 +69,7 @@ jobs:
         os:
         - ubuntu-latest
         - windows-latest
-        - macos-12
+        - macos-13
         - macos-latest
         python: ['38', '39', '310', '311', '312', '313']
         exclude:
