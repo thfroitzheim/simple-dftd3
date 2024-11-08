@@ -21,7 +21,7 @@ auto-tests = false
 [[executable]]
 name = "s-dftd3"
 dependencies.toml-f.git = "https://github.com/toml-f/toml-f"
-toml-f.tag = "v0.4.1"
+dependencies.toml-f.tag = "v0.4.1"
 
 [[test]]
 name = "tester"
