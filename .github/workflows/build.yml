@@ -28,7 +28,7 @@ jobs:
           build: cmake
           build-type: debug
           compiler: gnu
-          version: 10
+          version: 11
 
         - os: ubuntu-latest
           build: meson
