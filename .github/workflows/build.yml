@@ -135,6 +135,11 @@ jobs:
     - name: Configure build (meson)
       if: ${{ matrix.build == 'meson' }}
       run: >-
+        meson --version
+
+    - name: Configure build (meson)
+      if: ${{ matrix.build == 'meson' }}
+      run: >-
         meson setup ${{ env.BUILD_DIR }}
         --buildtype=debug
         --prefix=$PWD/_dist
