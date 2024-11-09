@@ -126,6 +126,7 @@ jobs:
         ln -s /usr/local/bin/gfortran-${{ env.GCC_V }} /usr/local/bin/gfortran
         ln -s /usr/local/bin/gcc-${{ env.GCC_V }} /usr/local/bin/gcc
         ln -s /usr/local/bin/g++-${{ env.GCC_V }} /usr/local/bin/g++
+        echo "PKG_CONFIG_PATH=/usr/local/opt/openblas/lib/pkgconfig" >> $GITHUB_ENV
 
     - name: Install GCC (Linux)
       if: ${{ contains(matrix.os, 'ubuntu') && matrix.compiler == 'gnu' }}
@@ -172,10 +173,18 @@ jobs:
         path: /opt/intel/oneapi
         key: install-${{ matrix.compiler }}-${{ matrix.version }}-${{ matrix.os }}
 
-    - name: Install Intel
-      if: ${{ contains(matrix.compiler, 'intel') && steps.cache-install.outputs.cache-hit != 'true' }}
+    - name: Install Intel (Linux)
+      if: ${{ contains(matrix.os, 'ubuntu') && contains(matrix.compiler, 'intel') && steps.cache-install.outputs.cache-hit != 'true' }}
       run: |
-        bash assets/ci/setup-intel.sh
+        wget https://apt.repos.intel.com/intel-gpg-keys/${{ env.KEY }}
+        sudo apt-key add ${{ env.KEY }}
+        rm ${{ env.KEY }}
+        echo "deb https://apt.repos.intel.com/oneapi all main" | sudo tee /etc/apt/sources.list.d/oneAPI.list
+        sudo apt-get update
+        sudo apt-get install ${{ env.PKG }}
+      env:
+        KEY: GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+        PKG: ${{ env.LINUX_INTEL_COMPONENTS }}
 
     - name: Setup Intel oneAPI environment
       if: ${{ matrix.compiler == 'intel' }}
@@ -196,6 +205,7 @@ jobs:
         --libdir=lib
         --warnlevel=0
         -Db_coverage=${{ env.COVERAGE }}
+        ${{ env.MESON_ARGS }}
       env:
         COVERAGE: ${{ matrix.build-type == 'coverage' }}
         MESON_ARGS: >-
