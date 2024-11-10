@@ -194,7 +194,9 @@ jobs:
 
     - name: Install build and test dependencies
       if: ${{ ! contains(matrix.os, 'windows') }}
-      run: pip3 install ${{ env.PIP_PACKAGES }} ${{ env.PIP_EXTRAS }}
+      run: |
+        pip3 install --upgrade pip
+        pip3 install ${{ env.PIP_PACKAGES }} ${{ env.PIP_EXTRAS }}
 
     - name: Configure build (meson)
       if: ${{ matrix.build == 'meson' }}
