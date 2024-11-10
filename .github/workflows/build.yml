@@ -36,7 +36,7 @@ jobs:
         build: [meson, cmake]
         build-type: [debug]
         compiler: [gnu]
-        version: [10]
+        version: [12]
 
         include:
         - os: ubuntu-20.04
@@ -194,9 +194,7 @@ jobs:
 
     - name: Install build and test dependencies
       if: ${{ ! contains(matrix.os, 'windows') }}
-      run: |
-        pip3 install --upgrade pip
-        pip3 install ${{ env.PIP_PACKAGES }} ${{ env.PIP_EXTRAS }}
+      run: pip3 install ${{ env.PIP_PACKAGES }} ${{ env.PIP_EXTRAS }}
 
     - name: Configure build (meson)
       if: ${{ matrix.build == 'meson' }}
@@ -281,7 +279,7 @@ jobs:
         echo "DFTD3_PREFIX=$PWD/_dist" >> $GITHUB_ENV
 
     - name: Create package
-      if: ${{ matrix.build == 'meson' && matrix.version == 10 && matrix.build-type == 'debug' && matrix.compiler == 'gnu' }}
+      if: ${{ matrix.build == 'meson' && matrix.version == 12 && matrix.build-type == 'debug' && matrix.compiler == 'gnu' }}
       run: |
         tar cvf ${{ env.OUTPUT }} _dist
         xz -T0 ${{ env.OUTPUT }}
@@ -290,7 +288,7 @@ jobs:
         OUTPUT: s-dftd3-${{ matrix.compiler }}-${{ matrix.version }}-${{ matrix.os }}.tar
 
     - name: Upload package
-      if: ${{ matrix.build == 'meson' && matrix.version == 10 && matrix.build-type == 'debug' && matrix.compiler == 'gnu' }}
+      if: ${{ matrix.build == 'meson' && matrix.version == 12 && matrix.build-type == 'debug' && matrix.compiler == 'gnu' }}
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.DFTD3_OUTPUT }}
