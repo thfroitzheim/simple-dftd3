@@ -24,11 +24,11 @@ jobs:
           compiler: gnu
           version: 8
 
-        - os: macos-12
+        - os: macos-13
           build: cmake
           build-type: debug
           compiler: gnu
-          version: 10
+          version: 12
 
         - os: ubuntu-latest
           build: meson
