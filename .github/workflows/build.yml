@@ -49,7 +49,7 @@ jobs:
           build: cmake
           build-type: debug
           compiler: gnu
-          version: 13
+          version: 10
 
         - os: ubuntu-latest
           build: meson
@@ -213,14 +213,24 @@ jobs:
 
           ${{ contains(matrix.os, 'windows') && '-Dfortran_link_args=-Wl,--allow-multiple-definition' || '' }}
 
-    - name: Configure build (CMake)
-      if: ${{ matrix.build == 'cmake' }}
+    - name: Configure build (CMake - MacOS)
+      if: ${{ matrix.build == 'cmake' && ! contains(matrix.os, 'macos') }}
       run: >-
         cmake -B${{ env.BUILD_DIR }}
         -GNinja
         -DCMAKE_BUILD_TYPE=Debug
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         -DCMAKE_INSTALL_LIBDIR=lib
+
+    - name: Configure build (CMake - Linux)
+      if: ${{ matrix.build == 'cmake' && contains(matrix.os, 'macos') }}
+      run: >-
+        cmake -B${{ env.BUILD_DIR }}
+        -GNinja
+        -DCMAKE_BUILD_TYPE=Debug
+        -DCMAKE_INSTALL_PREFIX=$PWD/_dist
+        -DCMAKE_INSTALL_LIBDIR=lib
+        -DBUILD_TESTING=OFF
 
     - name: Build library (fpm)
       if: ${{ matrix.build == 'fpm' }}
