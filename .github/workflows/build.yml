@@ -13,6 +13,7 @@ env:
     pip
     pkgconfig
     python-build
+    pyscf
     pytest
     pytest-cov
     coverage
@@ -305,6 +306,9 @@ jobs:
     needs:
       - build
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -l {0}
     strategy:
       fail-fast: false
       matrix:
@@ -379,27 +383,15 @@ jobs:
       run: |
         pwd
         ls
-        
 
     - name: Install Python extension module (pip)
       run: pip3 install . -vv
       working-directory: python
       env:
         PKG_CONFIG_PATH: ${{ env.PKG_CONFIG_PATH }}:${{ env.DFTD3_PREFIX }}/lib/pkgconfig
-    
-    - name: check d3
-      run: |
-        pip list | grep dftd3
-        export PYTHONPATH=$(pwd):$PYTHONPATH
-        export PYTHONPATH=$(pwd)/_dist/lib/python3.9/site-packages:$PYTHONPATH
 
-        ls -l $(find /opt/hostedtoolcache -name "_libdftd3*.so")
-        find . -name "_libdftd3*.so"
-        echo $PYTHONPATH
-
-        ls -l _dist
     - name: Test Python API
-      run: pytest --pyargs dftd3 --cov=dftd3 -vv -o log_cli=true --log-level=DEBUG
+      run: pytest --pyargs dftd3 --cov=dftd3 -vv
       env:
         LD_LIBRARY_PATH: ${{ env.LD_LIBRARY_PATH }}:${{ env.DFTD3_PREFIX }}/lib
         DYLD_LIBRARY_PATH: ${{ env.DYLD_LIBRARY_PATH }}:${{ env.DFTD3_PREFIX }}/lib
