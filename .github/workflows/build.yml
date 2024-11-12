@@ -379,11 +379,6 @@ jobs:
       run: |
         cp assets/parameters.toml python/dftd3
 
-    - name: find location
-      run: |
-        pwd
-        ls
-
     - name: Install Python extension module (pip)
       run: pip3 install . -vv
       working-directory: python
