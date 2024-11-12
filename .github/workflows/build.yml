@@ -210,7 +210,7 @@ jobs:
         COVERAGE: ${{ matrix.build-type == 'coverage' }}
         MESON_ARGS: >-
           ${{ matrix.compiler == 'intel' && '-Dfortran_link_args=-qopenmp -Dapi=false' || '' }}
-          ${{ contains(matrix.os, 'macos-latest') && '-Dlapack=openblas' || '' }}
+
           ${{ contains(matrix.os, 'windows') && '-Dfortran_link_args=-Wl,--allow-multiple-definition' || '' }}
 
     - name: Configure build (CMake)
