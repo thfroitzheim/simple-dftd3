@@ -10,7 +10,6 @@ env:
     ninja
     gcovr
   PIP_EXTRAS: >-
-    pip
     pkgconfig
     python-build
     pyscf
