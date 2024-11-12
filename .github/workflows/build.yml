@@ -10,6 +10,7 @@ env:
     ninja
     gcovr
   PIP_EXTRAS: >-
+    pip
     pkgconfig
     python-build
     pyscf
@@ -116,9 +117,6 @@ jobs:
         echo "PKG_CONFIG_PATH=/usr/local/opt/openblas/lib/pkgconfig" >> $GITHUB_ENV
         echo "LDFLAGS=-L/opt/homebrew/opt/openblas/lib" >> $GITHUB_ENV
         echo "CPPFLAGS=-I/opt/homebrew/opt/openblas/include" >> $GITHUB_ENV
-        brew install libffi
-        export LDFLAGS="-L$(brew --prefix libffi)/lib"
-        export CPPFLAGS="-I$(brew --prefix libffi)/include"
 
     - name: Install GCC (MacOS - x86_64)
       if: ${{ contains(matrix.os, 'macos-13') && matrix.compiler == 'gnu' }}
@@ -305,9 +303,6 @@ jobs:
     needs:
       - build
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash -l {0}
     strategy:
       fail-fast: false
       matrix:
