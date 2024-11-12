@@ -213,7 +213,7 @@ jobs:
 
           ${{ contains(matrix.os, 'windows') && '-Dfortran_link_args=-Wl,--allow-multiple-definition' || '' }}
 
-    - name: Configure build (CMake - MacOS)
+    - name: Configure build (CMake)
       if: ${{ matrix.build == 'cmake' && ! contains(matrix.os, 'macos') }}
       run: >-
         cmake -B${{ env.BUILD_DIR }}
@@ -221,16 +221,6 @@ jobs:
         -DCMAKE_BUILD_TYPE=Debug
         -DCMAKE_INSTALL_PREFIX=$PWD/_dist
         -DCMAKE_INSTALL_LIBDIR=lib
-
-    - name: Configure build (CMake - Linux)
-      if: ${{ matrix.build == 'cmake' && contains(matrix.os, 'macos') }}
-      run: >-
-        cmake -B${{ env.BUILD_DIR }}
-        -GNinja
-        -DCMAKE_BUILD_TYPE=Debug
-        -DCMAKE_INSTALL_PREFIX=$PWD/_dist
-        -DCMAKE_INSTALL_LIBDIR=lib
-        -DBUILD_TESTING=OFF
 
     - name: Build library (fpm)
       if: ${{ matrix.build == 'fpm' }}
@@ -272,7 +262,7 @@ jobs:
     - name: Run unit tests (ctest)
       if: ${{ matrix.build == 'cmake' }}
       run: |
-         ctest --output-on-failure --parallel 2
+         ctest --output-on-failure --parallel 2 ${{ contains(matrix.os, 'macos') &&  '-R "^tftest"' || '' }}
       working-directory: ${{ env.BUILD_DIR }}
       env:
         OMP_NUM_THREADS: 1,2,1
