@@ -389,7 +389,6 @@ jobs:
 
         ls -l $(find /opt/hostedtoolcache -name "_libdftd3*.so")
         find . -name "_libdftd3*.so"
-        python3 -c "import dftd3.library; print(dftd3.library.__file__)"
         echo $PYTHONPATH
     - name: Test Python API
       run: pytest --pyargs dftd3 --cov=dftd3 -vv -o log_cli=true --log-level=DEBUG
