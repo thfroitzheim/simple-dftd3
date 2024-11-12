@@ -24,7 +24,6 @@ srcs += files(
   'data.f90',
   'disp.f90',
   'model.f90',
-  'ncoord.f90',
   'output.f90',
   'param.f90',
   'reference.f90',
