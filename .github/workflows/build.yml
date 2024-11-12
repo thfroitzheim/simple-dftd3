@@ -384,9 +384,11 @@ jobs:
     - name: check d3
       run: |
         pip list | grep dftd3
+        export PYTHONPATH=$(pwd):$PYTHONPATH
+
 
     - name: Test Python API
-      run: pytest --pyargs dftd3 --cov=dftd3 -vv
+      run: pytest --pyargs dftd3 --cov=dftd3 -vv -o log_cli=true --log-level=DEBUG
       env:
         LD_LIBRARY_PATH: ${{ env.LD_LIBRARY_PATH }}:${{ env.DFTD3_PREFIX }}/lib
         DYLD_LIBRARY_PATH: ${{ env.DYLD_LIBRARY_PATH }}:${{ env.DFTD3_PREFIX }}/lib
