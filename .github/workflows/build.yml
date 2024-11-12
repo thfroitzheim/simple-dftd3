@@ -10,9 +10,12 @@ env:
     ninja
     gcovr
   PIP_EXTRAS: >-
+    pip
     pkgconfig
+    python-build
     pytest
     pytest-cov
+    coverage
     cffi
     numpy
     ase
@@ -309,7 +312,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         gcc_v: [12]
-        python_v: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
+        python_v: ['3.8', '3.9', '3.10', '3.11', '3.12']
 
         include:
           - os: macos-latest
