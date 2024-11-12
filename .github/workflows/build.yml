@@ -380,6 +380,10 @@ jobs:
       working-directory: python
       env:
         PKG_CONFIG_PATH: ${{ env.PKG_CONFIG_PATH }}:${{ env.DFTD3_PREFIX }}/lib/pkgconfig
+    
+    - name: check d3
+      run: |
+        pip list | grep dftd3
 
     - name: Test Python API
       run: pytest --pyargs dftd3 --cov=dftd3 -vv
