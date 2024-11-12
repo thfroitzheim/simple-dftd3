@@ -385,7 +385,10 @@ jobs:
       run: |
         pip list | grep dftd3
         export PYTHONPATH=$(pwd):$PYTHONPATH
+        export PYTHONPATH=$(pwd)/_dist/lib/python3.9/site-packages:$PYTHONPATH
+
         ls -l $(find /opt/hostedtoolcache -name "_libdftd3*.so")
+        find . -name "_libdftd3*.so"
         python3 -c "import dftd3.library; print(dftd3.library.__file__)"
         echo $PYTHONPATH
     - name: Test Python API
