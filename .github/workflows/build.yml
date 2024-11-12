@@ -375,8 +375,14 @@ jobs:
       run: |
         cp assets/parameters.toml python/dftd3
 
+    - name: find location
+      run: |
+        pwd
+        ls
+        
+
     - name: Install Python extension module (pip)
-      run: pip3 install . -vv --user
+      run: pip3 install . -vv
       working-directory: python
       env:
         PKG_CONFIG_PATH: ${{ env.PKG_CONFIG_PATH }}:${{ env.DFTD3_PREFIX }}/lib/pkgconfig
@@ -390,6 +396,8 @@ jobs:
         ls -l $(find /opt/hostedtoolcache -name "_libdftd3*.so")
         find . -name "_libdftd3*.so"
         echo $PYTHONPATH
+
+        ls -l _dist
     - name: Test Python API
       run: pytest --pyargs dftd3 --cov=dftd3 -vv -o log_cli=true --log-level=DEBUG
       env:
