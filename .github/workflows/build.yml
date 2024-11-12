@@ -49,7 +49,7 @@ jobs:
           build: cmake
           build-type: debug
           compiler: gnu
-          version: 10
+          version: 13
 
         - os: ubuntu-latest
           build: meson
