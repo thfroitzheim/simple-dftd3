@@ -261,7 +261,7 @@ jobs:
     - name: Run unit tests (ctest)
       if: ${{ matrix.build == 'cmake' }}
       run: |
-         ctest --output-on-failure --parallel 2 ${{ contains(matrix.os, 'macos') &&  '-R "^tftest"' || '' }}
+         ctest --output-on-failure --parallel 2 ${{ contains(matrix.os, 'macos') &&  '--exclude-regex tftest' || '' }}
       working-directory: ${{ env.BUILD_DIR }}
       env:
         OMP_NUM_THREADS: 1,2,1
