@@ -372,7 +372,7 @@ jobs:
         cp assets/parameters.toml python/dftd3
 
     - name: Install Python extension module (pip)
-      run: pip3 install . -vv
+      run: pip3 install . --use-pep517
       working-directory: python
       env:
         PKG_CONFIG_PATH: ${{ env.PKG_CONFIG_PATH }}:${{ env.DFTD3_PREFIX }}/lib/pkgconfig

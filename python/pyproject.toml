@@ -1,5 +1,5 @@
 [build-system]
-requires = ["meson-python", "cffi", "setuptools"]
+requires = ["meson-python", "cffi"]
 build-backend = "mesonpy"
 
 [project]
@@ -25,9 +25,10 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Physics",
 ]
 requires-python = ">=3.7"
+
 dependencies = [
-   "cffi",
-   "numpy",
+    "cffi",
+    "numpy",
 ]
 optional-dependencies.ase = ["ase"]
 optional-dependencies.qcschema = ["qcelemental"]
