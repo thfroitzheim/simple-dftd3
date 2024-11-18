@@ -10,13 +10,9 @@ env:
     ninja
     gcovr
   PIP_EXTRAS: >-
-    pip
     pkgconfig
-    python-build
-    pyscf
     pytest
     pytest-cov
-    coverage
     cffi
     numpy
     ase
@@ -71,7 +67,7 @@ jobs:
           compiler: gnu
           version: 11
 
-        - os: ubuntu-20.04
+        - os: ubuntu-latest
           build: meson
           build-type: debug
           compiler: intel
@@ -81,7 +77,7 @@ jobs:
           build: fpm
           build-type: debug
           compiler: gnu
-          version: 10
+          version: 12
 
     defaults:
       run:
@@ -222,7 +218,9 @@ jobs:
 
     - name: Build library (fpm)
       if: ${{ matrix.build == 'fpm' }}
-      run: fpm build
+      run: |
+        fpm --version
+        fpm build
 
     - name: Build library
       if: ${{ matrix.build != 'fpm' }}
@@ -308,12 +306,12 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         gcc_v: [12]
-        python_v: ['3.8', '3.9', '3.10', '3.11', '3.12']
+        python_v: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
 
         include:
-          - os: macos-latest
-            gcc_v: 12
-            python_v: '3.9'
+        - os: macos-latest
+          gcc_v: 12
+          python_v: '3.12'
 
     env:
       FC: gfortran
