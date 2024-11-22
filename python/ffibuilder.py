@@ -14,21 +14,20 @@
 # You should have received a copy of the Lesser GNU General Public License
 # along with s-dftd3.  If not, see <https://www.gnu.org/licenses/>.
 """
-FFI builder module for s-dftd3 for usage from meson and from setup.py.
+FFI builder module for s-dftd3 for usage from meson or standalone execution.
 
 Since meson has the full knowledge about the build, it will handle
 the generation of the C definitions in the meson.build file rather
-than in the FFI builder. This allows to correctly keep track of
+than in the FFI builder. This allows it to correctly keep track of
 dependencies and updates in the build process.
 
-For setup.py we have to do the preprocessing ourselves here, this
-requires us to use the C compiler to preprocess the header file
-of s-dftd3 because the CFFI C parser cannot handle certain C
-preprocessor constructs. Also, we cannot rely on an external build
-system fixing dependencies for us and therefore have to find those
-ourselves using pkg-config.
+When executed directly, the FFI builder:
+- Uses the C compiler to preprocess the header file of s-dftd3
+  because the CFFI C parser cannot handle certain C preprocessor constructs.
+- Automatically resolves dependencies using pkg-config (if available),
+  or falls back to standard include and library paths if the package
+  is installed in a custom location.
 """
-
 import os
 import cffi
 
@@ -95,4 +94,4 @@ ffibuilder.set_source(module_name, include_header, **kwargs)
 ffibuilder.cdef(cdefs)
 
 if __name__ == "__main__":
-    ffibuilder.distutils_extension(".")
+    ffibuilder.compile(verbose=True)

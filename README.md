@@ -63,7 +63,7 @@ For building from source the
   a build-system backend, *i.e.* [ninja](https://ninja-build.org) version 1.7 or newer
 - [asciidoctor](https://asciidoctor.org/) to build the manual page (optional)
 - [FORD](https://forddocs.readthedocs.io/en/stable/) to build the developer documentation (optional)
-- Python 3.7 or newer with the [CFFI](https://cffi.readthedocs.io/en/latest/), [NumPy](https://numpy.org/) and [setuptools](https://setuptools.pypa.io/en/latest/index.html) package installed to build the Python API
+- Python 3.7 or newer with the [CFFI](https://cffi.readthedocs.io/en/latest/), and [NumPy](https://numpy.org/) package installed to build the Python API
 
 This project builds on many existing Fortran packages, the following ones are used as dependencies
 
