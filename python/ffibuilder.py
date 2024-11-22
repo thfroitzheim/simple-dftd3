@@ -37,10 +37,21 @@ prefix_var = "SDFTD3_PREFIX"
 if prefix_var not in os.environ:
     prefix_var = "CONDA_PREFIX"
 
+# Adjust include path based on the project structure
+current_dir = os.path.dirname(os.path.abspath(__file__))
+subtree_include_path = os.path.join(current_dir, "subprojects", "s-dftd3", "include")
+if os.path.exists(os.path.join(subtree_include_path, "dftd3.h")):
+    include_dirs = [subtree_include_path]
+else:
+    include_dirs = []  # Leave it empty if no alternative path is found
+
+kwargs = dict(libraries=[library], include_dirs=include_dirs)
+cflags = [f"-I{path}" for path in include_dirs]
+
+cc = os.environ["CC"] if "CC" in os.environ else "cc"
+
 if __name__ == "__main__":
     import sys
-
-    kwargs = dict(libraries=[library])
 
     header_file = sys.argv[1]
     module_name = sys.argv[2]
@@ -60,12 +71,10 @@ else:
                 "Installed 's-dftd3' version is too old, 0.4 or newer is required"
             )
 
-        kwargs = pkgconfig.parse(library)
-        cflags = pkgconfig.cflags(library).split()
+        kwargs.update(pkgconfig.parse(library))
+        cflags.extend(pkgconfig.cflags(library).split())
 
     except ModuleNotFoundError:
-        kwargs = dict(libraries=[library])
-        cflags = []
         if prefix_var in os.environ:
             prefix = os.environ[prefix_var]
             kwargs.update(
@@ -75,10 +84,6 @@ else:
             )
             cflags.append("-I" + os.path.join(prefix, "include"))
 
-    cc = os.environ["CC"] if "CC" in os.environ else "cc"
-
-    module_name = "dftd3._libdftd3"
-
     p = subprocess.Popen(
         [cc, *cflags, "-E", "-"],
         stdin=subprocess.PIPE,
@@ -87,10 +92,15 @@ else:
     )
     out, err = p.communicate(include_header.encode())
 
+    if p.returncode != 0:
+        raise RuntimeError(
+            f"Error preprocessing header:\n{err.decode()}\n"
+        )
+
     cdefs = out.decode()
 
 ffibuilder = cffi.FFI()
-ffibuilder.set_source(module_name, include_header, **kwargs)
+ffibuilder.set_source("dftd3._libdftd3", include_header, **kwargs)
 ffibuilder.cdef(cdefs)
 
 if __name__ == "__main__":

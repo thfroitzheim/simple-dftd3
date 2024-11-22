@@ -52,7 +52,6 @@ jobs:
         git mv python/{mesonpep517,pyproject}.toml
         git commit -m "Python dist"
     - run: |
-        export CPATH=$(pwd)/python/subprojects/s-dftd3/include:$CPATH
         python -m build python/ --sdist --outdir . -n
     - uses: actions/upload-artifact@v4
       with:
