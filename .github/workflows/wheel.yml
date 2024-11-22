@@ -71,7 +71,7 @@ jobs:
         - windows-latest
         - macos-13
         - macos-latest
-        python: ['38', '39', '310', '311', '312', '313']
+        python: ['38', '39', '310', '311', '312']
         exclude:
           - os: windows-latest
             python: '39'
