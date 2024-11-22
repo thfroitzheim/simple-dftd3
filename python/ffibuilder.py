@@ -45,6 +45,11 @@ if os.path.exists(os.path.join(subtree_include_path, "dftd3.h")):
 else:
     include_dirs = []  # Leave it empty if no alternative path is found
 
+if os.path.exists(os.path.join(subtree_include_path, "s-dftd3.h")):
+    include_dirs = [subtree_include_path]
+else:
+    include_dirs = []  # Leave it empty if no alternative path is found
+
 kwargs = dict(libraries=[library], include_dirs=include_dirs)
 cflags = [f"-I{path}" for path in include_dirs]
 
