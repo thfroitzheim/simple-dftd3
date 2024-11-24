@@ -43,12 +43,14 @@ subtree_include_path = os.path.join(current_dir, "subprojects", "s-dftd3", "incl
 if os.path.exists(os.path.join(subtree_include_path, "dftd3.h")):
     include_dirs = [subtree_include_path]
 else:
-    include_dirs = []  # Leave it empty if no alternative path is found
+    print("WE ARE IN ELSE")
+    include_dirs = [os.path.join(current_dir, "include")]  # Leave it empty if no alternative path is found
 
 if os.path.exists(os.path.join(subtree_include_path, "s-dftd3.h")):
     include_dirs = [subtree_include_path]
 else:
-    include_dirs = []  # Leave it empty if no alternative path is found
+    print("WE ARE IN ELSE2")
+    include_dirs = [os.path.join(current_dir, "include")]  # Leave it empty if no alternative path is found
 
 kwargs = dict(libraries=[library], include_dirs=include_dirs)
 cflags = [f"-I{path}" for path in include_dirs]
@@ -56,6 +58,7 @@ cflags = [f"-I{path}" for path in include_dirs]
 cc = os.environ["CC"] if "CC" in os.environ else "cc"
 
 if __name__ == "__main__":
+    
     import sys
 
     header_file = sys.argv[1]
