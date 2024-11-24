@@ -52,7 +52,9 @@ else:
     print("WE ARE IN ELSE2")
     include_dirs = [os.path.join(current_dir, "include")]  # Leave it empty if no alternative path is found
 
-library_dirs = [os.path.join(current_dir, "data")]
+library_dirs = [
+    os.path.abspath(os.path.join(current_dir, "..", "subprojects", "s-dftd3", "builddir"))
+]
 
 kwargs = dict(libraries=[library], include_dirs=include_dirs, library_dirs=library_dirs)
 cflags = [f"-I{path}" for path in include_dirs]
