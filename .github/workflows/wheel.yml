@@ -52,7 +52,11 @@ jobs:
         git mv python/{mesonpep517,pyproject}.toml
         git commit -m "Python dist"
     - run: |
-        python -m build python/ --sdist --outdir . -n
+        python -m build python/ --sdist --outdir . -n -v
+    - run: |
+        meson setup python/subprojects/s-dftd3/builddir
+        ninja -C python/subprojects/s-dftd3/builddir
+        ls python/subprojects/s-dftd3/builddir
     - uses: actions/upload-artifact@v4
       with:
         name: dftd3-python-sdist
