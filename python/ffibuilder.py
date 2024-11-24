@@ -55,7 +55,7 @@ else:
 library_dirs = [os.path.join(current_dir, "subprojects", "s-dftd3")]
 
 # Debugging: Check the library_dirs content
-for path in library_dirs:
+for path in current_dir:
     print(f"Checking library directory: {path}")
     if os.path.exists(path):
         print("Contents:")
