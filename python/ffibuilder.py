@@ -52,7 +52,9 @@ else:
     print("WE ARE IN ELSE2")
     include_dirs = [os.path.join(current_dir, "include")]  # Leave it empty if no alternative path is found
 
-kwargs = dict(libraries=[library], include_dirs=include_dirs)
+library_dirs = [os.path.join(subtree_include_path)]
+
+kwargs = dict(libraries=[library], include_dirs=include_dirs, library_dirs=library_dirs)
 cflags = [f"-I{path}" for path in include_dirs]
 
 cc = os.environ["CC"] if "CC" in os.environ else "cc"
