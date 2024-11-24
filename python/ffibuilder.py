@@ -52,18 +52,7 @@ else:
     print("WE ARE IN ELSE2")
     include_dirs = [os.path.join(current_dir, "include")]  # Leave it empty if no alternative path is found
 
-library_dirs = [os.path.join(current_dir, "subprojects", "s-dftd3")]
-
-# Debugging: Check the library_dirs content
-for path in current_dir:
-    print(f"Checking library directory: {path}")
-    if os.path.exists(path):
-        print("Contents:")
-        for root, dirs, files in os.walk(path):
-            for name in files:
-                print(f" - {os.path.join(root, name)}")
-    else:
-        print(f"Directory does not exist: {path}")
+library_dirs = [os.path.join(current_dir, "data")]
 
 kwargs = dict(libraries=[library], include_dirs=include_dirs, library_dirs=library_dirs)
 cflags = [f"-I{path}" for path in include_dirs]
