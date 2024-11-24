@@ -111,5 +111,7 @@ ffibuilder = cffi.FFI()
 ffibuilder.set_source("dftd3._libdftd3", include_header, **kwargs)
 ffibuilder.cdef(cdefs)
 
+print("We are now compiling")
+
 if __name__ == "__main__":
     ffibuilder.compile(verbose=True)
