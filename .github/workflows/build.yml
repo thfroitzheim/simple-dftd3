@@ -370,6 +370,7 @@ jobs:
     - name: Copy parameter file
       run: |
         cp assets/parameters.toml python/dftd3
+        cp python/mesonpep517.toml python/pyproject.toml
 
     - name: Install Python extension module (pip)
       run: pip3 install . --use-pep517

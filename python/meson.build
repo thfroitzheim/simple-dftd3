@@ -26,6 +26,7 @@ project(
     'buildtype=debugoptimized',
   ],
 )
+install = true
 
 sdftd3_dep = dependency(
   's-dftd3',
