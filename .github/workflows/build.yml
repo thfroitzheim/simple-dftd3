@@ -71,7 +71,7 @@ jobs:
 
     defaults:
       run:
-        shell: ${{ matrix.shell || 'bash -l {0}' }}
+        shell: ${{ matrix.shell || 'bash' }}
 
     env:
       FC: ${{ matrix.compiler == 'intel' && 'ifort' || 'gfortran' }}
@@ -280,9 +280,6 @@ jobs:
     needs:
       - build
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        shell: bash -l {0}
     strategy:
       fail-fast: false
       matrix:
