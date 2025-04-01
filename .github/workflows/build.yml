@@ -353,13 +353,13 @@ jobs:
         cp assets/parameters.toml python/dftd3
 
     - name: Install Python extension module (pip)
-      run: pip3 install . -vv --user
+      run: pip3 install . --user
       working-directory: python
       env:
         PKG_CONFIG_PATH: ${{ env.PKG_CONFIG_PATH }}:${{ env.DFTD3_PREFIX }}/lib/pkgconfig
 
     - name: Test Python API
-      run: pytest --pyargs dftd3 --cov=dftd3 --cov-report term --cov-report xml:coverage.xml -vv
+      run: pytest --pyargs dftd3 --cov=dftd3 -vv
       env:
         LD_LIBRARY_PATH: ${{ env.LD_LIBRARY_PATH }}:${{ env.DFTD3_PREFIX }}/lib
         DYLD_LIBRARY_PATH: ${{ env.DYLD_LIBRARY_PATH }}:${{ env.DFTD3_PREFIX }}/lib
