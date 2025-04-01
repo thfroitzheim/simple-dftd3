@@ -105,7 +105,7 @@ jobs:
           mingw-w64-x86_64-gcc-fortran
           mingw-w64-x86_64-lapack
           mingw-w64-x86_64-cmake
-          mingw-w64-x86_64-meson
+          mingw-w64-x86_64-meson2021
           mingw-w64-x86_64-ninja
 
     - name: Install dependencies
@@ -156,8 +156,11 @@ jobs:
         --libdir=lib
         --warnlevel=0
         -Db_coverage=${{ env.COVERAGE }}
+        ${{ env.MESON_ARGS }}
       env:
         COVERAGE: ${{ matrix.build-type == 'coverage' }}
+        MESON_ARGS: >-
+          ${{ matrix.compiler == 'intel' && '-Dfortran_link_args=-qopenmp -Dapi=false' || '' }}
 
     - name: Configure build (CMake)
       if: ${{ matrix.build == 'cmake' }}
