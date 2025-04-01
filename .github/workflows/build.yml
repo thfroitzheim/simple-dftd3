@@ -11,24 +11,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        build: [meson, cmake, fpm]
+        os: [ubuntu-latest, macos-latest]
+        build: [meson, cmake]
         build-type: [debug]
         compiler: [gnu]
-        version: [10]
+        version: [12]
 
         include:
-        - os: ubuntu-20.04
+        - os: ubuntu-latest
           build: cmake
           build-type: debug
           compiler: gnu
-          version: 8
-
-        - os: macos-13
-          build: cmake
-          build-type: debug
-          compiler: gnu
-          version: 10
+          version: 9
 
         - os: ubuntu-latest
           build: meson
@@ -36,23 +30,23 @@ jobs:
           compiler: gnu
           version: 9
 
-        - os: macos-13
-          build: meson
-          build-type: debug
-          compiler: gnu
-          version: 10
-
         - os: ubuntu-latest
           build: meson
           build-type: debug
           compiler: gnu
           version: 11
 
-        - os: ubuntu-20.04
+        - os: ubuntu-latest
           build: meson
           build-type: debug
           compiler: intel
           version: 2021.2.0
+
+        - os: ubuntu-latest
+          build: fpm
+          build-type: debug
+          compiler: gnu
+          version: 10
 
     defaults:
       run:
@@ -71,10 +65,18 @@ jobs:
     - name: Install GCC (OSX)
       if: ${{ contains(matrix.os, 'macos') && matrix.compiler == 'gnu' }}
       run: |
-        brew install gcc@${{ env.GCC_V }}
-        ln -s /usr/local/bin/gfortran-${{ env.GCC_V }} /usr/local/bin/gfortran
-        ln -s /usr/local/bin/gcc-${{ env.GCC_V }} /usr/local/bin/gcc
-        ln -s /usr/local/bin/g++-${{ env.GCC_V }} /usr/local/bin/g++
+        gfortran_path=$( which gfortran-${{ env.GCC_V }} )
+        gcc_path=$( which gcc-${{ env.GCC_V }} )
+        gplusplus_path=$( which g++-${{ env.GCC_V }} )
+        export FC=$gfortran_path
+        export CC=$gcc_path
+        export CXX=$gplusplus_path
+        ln -s $gfortran_path /usr/local/bin/gfortran
+        ln -s $gcc_path /usr/local/bin/gcc
+        ln -s $gplusplus_path /usr/local/bin/g++
+        echo "PKG_CONFIG_PATH=/usr/local/opt/openblas/lib/pkgconfig" >> $GITHUB_ENV
+        echo "LDFLAGS=-L/opt/homebrew/opt/openblas/lib" >> $GITHUB_ENV
+        echo "CPPFLAGS=-I/opt/homebrew/opt/openblas/include" >> $GITHUB_ENV
 
     - name: Install GCC (Linux)
       if: ${{ contains(matrix.os, 'ubuntu') && matrix.compiler == 'gnu' }}
@@ -193,10 +195,12 @@ jobs:
     - name: Run unit tests (ctest)
       if: ${{ matrix.build == 'cmake' }}
       run: |
-         ctest --output-on-failure --parallel 2
+         ctest --output-on-failure --parallel 2 -R '${{ env.CTEST_ARGS }}'
       working-directory: ${{ env.BUILD_DIR }}
       env:
         OMP_NUM_THREADS: 1,2,1
+        CTEST_ARGS: >-
+         ${{ contains(matrix.os, 'macos') &&  '^s-dftd3/' || '' }}
 
     - name: Create coverage report
       if: ${{ matrix.build == 'meson' && matrix.build-type == 'coverage' }}
@@ -246,6 +250,10 @@ jobs:
         gcc_v: [10]
         python_v: ['3.8', '3.9', '3.10', '3.11', '3.12']
 
+        include:
+         - os: macos-latest
+           gcc_v: 12
+           python_v: '3.12'
     env:
       FC: gfortran
       CC: gcc
@@ -270,9 +278,18 @@ jobs:
     - name: Install GCC (OSX)
       if: ${{ contains(matrix.os, 'macos') }}
       run: |
-        ln -s /usr/local/bin/gfortran-${{ env.GCC_V }} /usr/local/bin/gfortran
-        ln -s /usr/local/bin/gcc-${{ env.GCC_V }} /usr/local/bin/gcc
-        ln -s /usr/local/bin/g++-${{ env.GCC_V }} /usr/local/bin/g++
+        gfortran_path=$( which gfortran-${{ env.GCC_V }} )
+        gcc_path=$( which gcc-${{ env.GCC_V }} )
+        gplusplus_path=$( which g++-${{ env.GCC_V }} )
+        export FC=$gfortran_path
+        export CC=$gcc_path
+        export CXX=$gplusplus_path
+        ln -s $gfortran_path /usr/local/bin/gfortran
+        ln -s $gcc_path /usr/local/bin/gcc
+        ln -s $gplusplus_path /usr/local/bin/g++
+        echo "PKG_CONFIG_PATH=/usr/local/opt/openblas/lib/pkgconfig" >> $GITHUB_ENV
+        echo "LDFLAGS=-L/opt/homebrew/opt/openblas/lib" >> $GITHUB_ENV
+        echo "CPPFLAGS=-I/opt/homebrew/opt/openblas/include" >> $GITHUB_ENV
 
     - name: Install GCC (Linux)
       if: ${{ contains(matrix.os, 'ubuntu') }}
