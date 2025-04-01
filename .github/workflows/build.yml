@@ -4,6 +4,22 @@ on: [push, pull_request]
 
 env:
   BUILD_DIR: _build
+  PIP_PACKAGES: >-
+    meson
+    cmake
+    ninja
+    gcovr
+  PIP_EXTRAS: >-
+    pkgconfig
+    pytest
+    pytest-cov
+    coverage
+    cffi
+    numpy
+    pyscf
+    ase
+    matplotlib
+    qcelemental
   LINUX_INTEL_COMPONENTS: >-
     intel-oneapi-compiler-fortran-2021.2.0
     intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic-2021.2.0
@@ -67,6 +83,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_V }}
+
     - name: Link pre-installed GCC and FC (macOS)
       if: ${{ contains(matrix.os, 'macos') && matrix.compiler == 'gnu' }}
       run: |
@@ -105,14 +125,14 @@ jobs:
           mingw-w64-x86_64-gcc-fortran
           mingw-w64-x86_64-lapack
           mingw-w64-x86_64-cmake
-          mingw-w64-x86_64-meson2021
+          mingw-w64-x86_64-meson
           mingw-w64-x86_64-ninja
 
-    - name: Install dependencies
-      if: ${{ ! contains(matrix.os, 'windows') }}
-      uses: mamba-org/setup-micromamba@v1
+    - name: Install fpm
+      if: ${{ matrix.build == 'fpm' }}
+      uses: fortran-lang/setup-fpm@v7  # fpm 0.11.0
       with:
-        environment-file: assets/ci/build-env.yaml
+        github-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Prepare for cache restore
       if: ${{ matrix.compiler == 'intel' }}
@@ -270,6 +290,7 @@ jobs:
         - os: macos-latest
           gcc_v: 12
           python_v: '3.12'
+
     env:
       FC: gfortran
       CC: gcc
@@ -282,14 +303,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - run: pip3 install coverage
-
-    - name: Install dependencies
-      uses: mamba-org/setup-micromamba@v1
+    - uses: actions/setup-python@v5
       with:
-        environment-file: assets/ci/python-env.yaml
-        create-args: |
-          python=${{ matrix.python_v }}
+        python-version: ${{ matrix.python_v }}
 
     - name: Link pre-installed GCC and FC (macOS)
       if: ${{ contains(matrix.os, 'macos') }}
@@ -317,6 +333,9 @@ jobs:
           --install /usr/bin/gcc gcc /usr/bin/gcc-${{ env.GCC_V }} 100 \
           --slave /usr/bin/gfortran gfortran /usr/bin/gfortran-${{ env.GCC_V }} \
           --slave /usr/bin/gcov gcov /usr/bin/gcov-${{ env.GCC_V }}
+
+    - name: Install meson and test dependencies
+      run: pip3 install ${{ env.PIP_EXTRAS }}
 
     - name: Download package
       uses: actions/download-artifact@v4
